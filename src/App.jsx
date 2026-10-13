@@ -5,6 +5,7 @@ import { APP_NAME, MON_FAUCET, SESSION_LIMIT_USD, SESSION_MINUTES, addressUrl, t
 import { createAccount, forgetCredential, passkeyError, passkeysSupported, savedCredential, signIn } from "./passkey";
 import {
   agoraRate,
+  faucetWait,
   loadBalances,
   loadTokens,
   quoteOtherToAusd,
@@ -14,7 +15,7 @@ import {
   sendViaInstantSettlement,
   walletFor,
 } from "./chain";
-import { friendlyError, money, parseAmount, parseRecipient, payLink, seconds, shortAddr } from "./format";
+import { FAUCET_BUSY, cleanAmount, duration, friendlyError, money, parseAmount, parseRecipient, payLink, seconds, shortAddr } from "./format";
 
 const SESSION_MS = SESSION_MINUTES * 60 * 1000;
 
@@ -89,7 +90,7 @@ function Welcome({ pending, notice, onReady }) {
         <h1>Send dollars home with your fingerprint.</h1>
         <p className="lede">
           Your account is a passkey on this phone. No app to install, no seed phrase to write down. Money arrives in
-          about a second.
+          a couple of seconds.
         </p>
         {notice && <p className="pending">{notice}</p>}
         {pending && (
@@ -266,7 +267,7 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
   const d = tokens.ausdDecimals;
   const pair = tokens.pair;
   const [to, setTo] = useState(prefill?.to || "");
-  const [amount, setAmount] = useState(prefill?.amount || "");
+  const [amount, setAmount] = useState(cleanAmount(prefill?.amount));
   const [via, setVia] = useState("ausd");
   const [rate, setRate] = useState(null);
   const [quote, setQuote] = useState(null);
@@ -300,7 +301,7 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
     const parsed = parseRecipient(v);
     if (parsed && parsed.to !== v.trim()) {
       setTo(parsed.to);
-      if (parsed.amount) setAmount(parsed.amount);
+      if (parsed.amount) setAmount(cleanAmount(parsed.amount));
     } else setTo(v.trim());
   }
 
@@ -347,7 +348,13 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
           Amount
           <span className="money-input">
             <span aria-hidden="true">$</span>
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="25" inputMode="decimal" />
+            <input
+              value={amount}
+              onChange={(e) => setAmount(cleanAmount(e.target.value))}
+              placeholder="25"
+              inputMode="decimal"
+              autoComplete="off"
+            />
           </span>
         </label>
 
@@ -499,7 +506,13 @@ function Receive({ me, onBack }) {
           Ask for an amount (optional)
           <span className="money-input">
             <span aria-hidden="true">$</span>
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="25" inputMode="decimal" />
+            <input
+              value={amount}
+              onChange={(e) => setAmount(cleanAmount(e.target.value))}
+              placeholder="25"
+              inputMode="decimal"
+              autoComplete="off"
+            />
           </span>
         </label>
         <div className="row-actions">
@@ -578,11 +591,28 @@ export default function App() {
     setGas("idle");
   }, [me]);
 
+  // Token metadata. Retry until it loads: one RPC hiccup at startup shouldn't leave the app stuck on "…".
   useEffect(() => {
     if (!me) return;
-    loadTokens()
-      .then(setTokens)
-      .catch((e) => setError(friendlyError(e)));
+    let stop = false;
+    let timer;
+    const attempt = () =>
+      loadTokens()
+        .then((t) => {
+          if (stop) return;
+          setTokens(t);
+          setError("");
+        })
+        .catch((e) => {
+          if (stop) return;
+          setError(friendlyError(e));
+          timer = setTimeout(attempt, 3000);
+        });
+    attempt();
+    return () => {
+      stop = true;
+      clearTimeout(timer);
+    };
   }, [me]);
 
   // Session expiry: wipe the signing key and send the user back to unlock.
@@ -610,7 +640,9 @@ export default function App() {
       lastAusd.current = b.ausd;
       setBal({ ...b, me });
     } catch (e) {
-      setError(friendlyError(e));
+      // This runs every 2 seconds. Once a balance is on screen, a single failed poll
+      // isn't worth an error banner; the next poll usually succeeds.
+      if (lastAusd.current == null) setError(friendlyError(e));
     }
   }, [me, tokens, record, showToast]);
 
@@ -650,15 +682,28 @@ export default function App() {
     setError("");
     expectingFaucet.current = true;
     try {
+      // Read the balance before the request: the 2-second poll can update lastAusd while we wait.
+      const before = (await loadBalances(me, tokens)).ausd;
       const hash = await requestTestAusd(wallet);
-      const before = lastAusd.current ?? 0n;
       const b = await loadBalances(me, tokens);
       lastAusd.current = b.ausd;
       setBal({ ...b, me });
       record({ type: "faucet", amount: money(b.ausd - before, tokens.ausdDecimals), hash });
       noteFirstTx();
     } catch (e) {
-      setError(friendlyError(e));
+      const msg = friendlyError(e);
+      setError(msg);
+      if (msg === FAUCET_BUSY) {
+        // Say exactly how long, read from the faucet contract itself.
+        faucetWait()
+          .then(({ left, every }) => {
+            if (left > 0)
+              setError(
+                `Agora's test-dollar faucet is shared by everyone testing and gives out one request every ${duration(every)}. Try again in about ${duration(left)}.`
+              );
+          })
+          .catch(() => {});
+      }
     } finally {
       expectingFaucet.current = false;
       setBusy("");

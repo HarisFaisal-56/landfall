@@ -2,6 +2,8 @@
 
 Money, landed. Send dollars home with your fingerprint.
 
+**Live app:** https://landfall-kohl.vercel.app (Monad testnet). Open it on your phone. Passkeys are tied to this exact domain, so use this link rather than a Vercel preview URL.
+
 Landfall is a mobile payments app on Monad. The name is the moment money crosses the water and arrives. You sign up with a passkey, hold AUSD, and send it to anyone with an address or a pay link. It arrives in a couple of seconds. There's nothing to install from an app store and no seed phrase.
 
 Built for Monad Metropolis, **Consumer Products & Payments** track, targeting the **Agora Cross-Border Payments** and **Best Mera-Powered UX** bounties.
@@ -88,7 +90,8 @@ Only the sender needs MON. Receiving costs nothing.
 
 - Testnet only. Test dollars, not money.
 - Swapping through Instant Settlement requires Agora to grant the account the `APPROVED_SWAPPER` role. Until then the CTK option is shown but disabled, the live rate still displays, and sends go out as direct AUSD transfers.
-- Gas top-up is a simple funded endpoint that only pays empty accounts. A production version would use a paymaster with real abuse limits.
+- Gas top-up is a funded endpoint that only pays nearly empty accounts, at most 5 top-ups per network address per hour and 12 per minute overall (`DRIP_PER_IP_PER_HOUR`, `DRIP_PER_MINUTE`). The limits live in memory, so they stop a simple script, not a determined attacker. A production version would use a paymaster.
+- Agora's AUSD faucet is shared by everyone on testnet: one request per `maxDripFrequency` across all users. When it's busy the app reads the contract and says how long to wait.
 - Activity history is stored on the device; balances always come from the chain.
 - Mera is in preview, and this app has not had a security review.
 

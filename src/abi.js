@@ -9,10 +9,15 @@ export const erc20Abi = parseAbi([
   "function transfer(address to, uint256 amount) returns (bool)",
 ]);
 
+// Agora's AUSD faucet (ABI from github.com/agora-finance/stable-swap-examples).
+// The drip limit is global: one request per maxDripFrequency seconds across everyone.
 export const faucetAbi = parseAbi([
   "function requestFunds(address _receiver)",
-  // Agora's faucet rate limit. Listed so viem can name it instead of printing a raw selector.
+  "function lastDripTimestamp() view returns (uint256)",
+  "function maxDripFrequency() view returns (uint256)",
   "error MaxFrequencyExceeded()",
+  "error MaxAllowedExceeded()",
+  "error InsufficientFunds()",
 ]);
 
 // Subset of Agora's AgoraStableSwap pair ABI (github.com/agora-finance/stable-swap-examples).

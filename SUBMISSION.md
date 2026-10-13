@@ -4,6 +4,10 @@
 
 Landfall
 
+## Live app
+
+https://landfall-kohl.vercel.app (open on a phone; passkeys are bound to this domain)
+
 ## One-line description
 
 Send dollars across borders with a passkey: AUSD on Monad, settled in about a second and a half.

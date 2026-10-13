@@ -126,6 +126,16 @@ export async function requestGasTopUp(address) {
   }
 }
 
+/** Seconds until Agora's shared faucet accepts the next request, and its drip interval. */
+export async function faucetWait() {
+  const [last, every, block] = await Promise.all([
+    read(AGORA.ausdFaucet, faucetAbi, "lastDripTimestamp"),
+    read(AGORA.ausdFaucet, faucetAbi, "maxDripFrequency"),
+    publicClient.getBlock(),
+  ]);
+  return { left: Math.max(0, Number(last + every - block.timestamp)), every: Number(every) };
+}
+
 export async function requestTestAusd(wallet) {
   const hash = await wallet.writeContract({ address: AGORA.ausdFaucet, abi: faucetAbi, functionName: "requestFunds", args: [wallet.account.address] });
   const receipt = await publicClient.waitForTransactionReceipt({ hash, pollingInterval: 150 });
