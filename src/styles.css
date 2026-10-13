@@ -159,7 +159,9 @@ h2 {
   margin: 2px 0 0;
   font-stretch: 118%;
   font-weight: 800;
-  font-size: clamp(46px, 15vw, 76px);
+  /* Shrinks with the number of characters so "$10,000.00" stays on one line on a phone. */
+  font-size: clamp(30px, calc((min(100vw, 460px) - 44px) / (var(--chars, 6) * 0.7)), 76px);
+  white-space: nowrap;
   line-height: 1.02;
   letter-spacing: -0.035em;
   color: var(--signal);

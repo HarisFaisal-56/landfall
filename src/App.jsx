@@ -174,9 +174,14 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
 
       <section className="hero">
         <p className="label">Your balance</p>
-        <p className="big" aria-live="polite">
-          {bal ? `$${money(bal.ausd, d)}` : "…"}
-        </p>
+        {(() => {
+          const text = bal ? `$${money(bal.ausd, d)}` : "…";
+          return (
+            <p className="big" aria-live="polite" style={{ "--chars": text.length }}>
+              {text}
+            </p>
+          );
+        })()}
         <p className="sub">{tokens?.ausdSymbol ?? "AUSD"}, a US dollar stablecoin by Agora, on Monad</p>
         <div className="pair-actions">
           <button className="primary" onClick={onSend} disabled={!bal}>
@@ -419,7 +424,9 @@ function Sent({ result, tokens, onDone }) {
     <main className="shell sent">
       <section className="hero">
         <p className="label">Sent to {shortAddr(result.to)}</p>
-        <p className="big">${money(result.received, tokens.ausdDecimals)}</p>
+        <p className="big" style={{ "--chars": `$${money(result.received, tokens.ausdDecimals)}`.length }}>
+          ${money(result.received, tokens.ausdDecimals)}
+        </p>
         <p className="settled">
           Settled in <strong>{seconds(result.ms)}</strong>
         </p>

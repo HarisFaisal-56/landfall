@@ -62,6 +62,8 @@ export function friendlyError(e) {
     return "This account has no MON for network fees yet. Add a little from the MON faucet, then try again.";
   if (/AddressIsNotRole|APPROVED_SWAPPER/i.test(msg))
     return "Agora hasn't approved this account for Instant Settlement yet. Send in AUSD instead.";
+  if (/MaxFrequencyExceeded|0x20e5bc67/i.test(msg))
+    return "Agora's test-dollar faucet is rate-limited and has had too many requests. Wait a minute, then tap Get test AUSD again.";
   if (/PairIsPaused/i.test(msg)) return "Agora's Instant Settlement pair is paused right now. Send in AUSD instead.";
   if (/InsufficientOutputAmount|InsufficientLiquidity/i.test(msg)) return "The rate moved or liquidity is low. Try a smaller amount.";
   if (/transfer amount exceeds balance|ERC20InsufficientBalance|InsufficientTokens/i.test(msg))

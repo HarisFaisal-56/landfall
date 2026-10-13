@@ -9,7 +9,11 @@ export const erc20Abi = parseAbi([
   "function transfer(address to, uint256 amount) returns (bool)",
 ]);
 
-export const faucetAbi = parseAbi(["function requestFunds(address _receiver)"]);
+export const faucetAbi = parseAbi([
+  "function requestFunds(address _receiver)",
+  // Agora's faucet rate limit. Listed so viem can name it instead of printing a raw selector.
+  "error MaxFrequencyExceeded()",
+]);
 
 // Subset of Agora's AgoraStableSwap pair ABI (github.com/agora-finance/stable-swap-examples).
 // Roles are plain strings on this contract, e.g. hasRole("APPROVED_SWAPPER", addr).
