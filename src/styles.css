@@ -1,0 +1,626 @@
+:root {
+  --cobalt: #2338e8;
+  --ink: #0e1330;
+  --paper: #f3f5ff;
+  --signal: #ffd84a;
+  --mist: #c3c9ff;
+  --line: rgba(243, 245, 255, 0.22);
+  --alarm: #ffb4a8;
+  --alarm-dark: #a3200f;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--cobalt);
+}
+
+body {
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shell {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top)) 18px calc(40px + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-stretch: 112%;
+  letter-spacing: -0.015em;
+}
+
+/* ---- bar -------------------------------------------------------- */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+}
+
+.wordmark {
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 21px;
+}
+
+.chip {
+  font: inherit;
+  font-size: 14px;
+  color: var(--paper);
+  background: rgba(14, 19, 48, 0.32);
+  border: 0;
+  border-radius: 99px;
+  padding: 8px 14px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.session {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(14, 19, 48, 0.28);
+  font-size: 14px;
+  color: var(--mist);
+}
+
+.session .link {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.toast.floating-top {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(430px, calc(100% - 32px));
+  margin: 0;
+  z-index: 5;
+}
+
+.back {
+  font: inherit;
+  font-weight: 600;
+  color: var(--paper);
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+/* ---- welcome ---------------------------------------------------- */
+.intro {
+  padding: 18vh 0 28px;
+}
+
+.intro h1 {
+  font-weight: 800;
+  font-size: clamp(34px, 10.5vw, 48px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--signal);
+  margin-bottom: 16px;
+}
+
+.lede {
+  margin: 0;
+  max-width: 34ch;
+}
+
+.pending {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--signal);
+  background: rgba(14, 19, 48, 0.3);
+}
+
+.entry {
+  display: grid;
+  gap: 12px;
+}
+
+.fine {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--mist);
+}
+
+/* ---- hero: the one loud thing ---------------------------------- */
+.hero {
+  padding: 34px 0 30px;
+}
+
+.label {
+  margin: 0;
+  font-size: 15px;
+  color: var(--mist);
+}
+
+.big {
+  margin: 2px 0 0;
+  font-stretch: 118%;
+  font-weight: 800;
+  font-size: clamp(46px, 15vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--signal);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--mist);
+  max-width: 38ch;
+}
+
+.pair-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* ---- sent ------------------------------------------------------- */
+.sent .hero {
+  padding-top: 16vh;
+}
+
+.settled {
+  margin: 22px 0 0;
+  font-size: 22px;
+  font-stretch: 110%;
+}
+
+.settled strong {
+  font-weight: 800;
+  background: var(--signal);
+  color: var(--ink);
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.links {
+  margin: 18px 0 28px;
+}
+
+.links a {
+  color: var(--paper);
+  text-underline-offset: 3px;
+}
+
+/* ---- buttons ---------------------------------------------------- */
+.primary,
+.ghost,
+.quiet {
+  font: inherit;
+  appearance: none;
+  border-radius: 14px;
+  min-height: 52px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-stretch: 108%;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary {
+  border: 0;
+  background: var(--signal);
+  color: var(--ink);
+  width: 100%;
+}
+
+.primary.dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1.5px solid var(--paper);
+}
+
+.ghost.on-light {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.ghost.small {
+  min-height: 40px;
+  padding: 6px 14px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+
+.quiet {
+  background: none;
+  border: 0;
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+}
+
+.link {
+  font: inherit;
+  font-size: 15px;
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  color: var(--paper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link.dark {
+  color: var(--ink);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.sheet :focus-visible {
+  outline-color: var(--cobalt);
+}
+
+/* ---- setup checklist ------------------------------------------- */
+.setup {
+  border-top: 1px solid var(--line);
+  padding: 22px 0 6px;
+}
+
+.setup h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.setup ol {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.setup li {
+  display: grid;
+  gap: 8px;
+}
+
+.setup li.done span:first-child {
+  color: var(--mist);
+  text-decoration: line-through;
+}
+
+.setup-actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tick {
+  font-size: 14px;
+  color: var(--signal);
+}
+
+/* ---- activity --------------------------------------------------- */
+.activity {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  margin-top: 8px;
+}
+
+.activity h2 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.activity ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activity li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.activity em {
+  display: block;
+  font-style: normal;
+  font-size: 14px;
+  color: var(--mist);
+}
+
+.a-amt {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.a-amt.in {
+  color: var(--signal);
+}
+
+.a-amt a {
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--mist);
+}
+
+.empty {
+  color: var(--mist);
+  margin: 6px 0 0;
+}
+
+/* ---- paper sheet (forms) --------------------------------------- */
+.sheet {
+  margin-top: 8px;
+  padding: 22px 18px 24px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 20px;
+}
+
+.sheet h1 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  min-height: 52px;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid #c9cffc;
+  border-radius: 12px;
+}
+
+.field.light {
+  color: var(--paper);
+  margin-bottom: 0;
+}
+
+.field.light input {
+  border-color: transparent;
+}
+
+.money-input {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  background: #fff;
+  border: 1.5px solid #c9cffc;
+  border-radius: 12px;
+  padding-left: 14px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.money-input input {
+  margin: 0;
+  border: 0;
+  font-size: 22px;
+  font-weight: 700;
+  padding-left: 4px;
+}
+
+.money-input:focus-within {
+  outline: 3px solid var(--cobalt);
+  outline-offset: 2px;
+}
+
+.money-input input:focus-visible {
+  outline: none;
+}
+
+.via {
+  border: 0;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.via legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.opt {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1.5px solid #c9cffc;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.opt.on {
+  border-color: var(--cobalt);
+  background: #e6e9ff;
+}
+
+.opt.off {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.opt input {
+  margin-top: 4px;
+  accent-color: var(--cobalt);
+  width: 18px;
+  height: 18px;
+}
+
+.opt em {
+  display: block;
+  font-style: normal;
+  font-size: 14px;
+  color: #4a5185;
+}
+
+.summary {
+  border-top: 1px solid #d6daf9;
+  padding-top: 12px;
+  margin-bottom: 16px;
+}
+
+.summary p {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 6px;
+}
+
+.summary strong {
+  font-size: 19px;
+}
+
+.summary .rate {
+  font-size: 14px;
+  color: #4a5185;
+}
+
+.receive .hint {
+  margin: -6px 0 16px;
+  font-size: 15px;
+  color: #4a5185;
+}
+
+.qr {
+  display: block;
+  width: min(260px, 70vw);
+  height: auto;
+  margin: 0 auto 18px;
+  border-radius: 12px;
+}
+
+.row-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.addr {
+  margin: 16px 0 0;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.addr a {
+  color: var(--ink);
+}
+
+.addr .link {
+  display: block;
+}
+
+/* ---- messages --------------------------------------------------- */
+.error {
+  margin: 4px 0 12px;
+  font-size: 15px;
+  color: var(--alarm);
+}
+
+.sheet .error {
+  color: var(--alarm-dark);
+}
+
+.error.floating {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(430px, calc(100% - 32px));
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 8px 28px rgba(14, 19, 48, 0.45);
+  cursor: pointer;
+}
+
+.toast {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 700;
+  animation: drop 260ms ease-out;
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
