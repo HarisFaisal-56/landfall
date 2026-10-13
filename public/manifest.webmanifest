@@ -1,0 +1,10 @@
+{
+  "name": "Landfall",
+  "short_name": "Landfall",
+  "description": "Send dollars across borders with a passkey.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2338e8",
+  "theme_color": "#2338e8",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2338e8"/>
+  <!-- an arc arriving onto a horizon line: money making landfall -->
+  <path d="M120 300 C 170 150, 300 130, 372 300" fill="none" stroke="#ffd84a" stroke-width="34" stroke-linecap="round"/>
+  <circle cx="372" cy="300" r="30" fill="#ffd84a"/>
+  <path d="M96 372 H416" stroke="#f3f5ff" stroke-width="30" stroke-linecap="round"/>
+</svg>
