@@ -2,7 +2,7 @@
 
 Money, landed. Send dollars home with your fingerprint.
 
-Landfall is a mobile payments app on Monad. The name is the moment money crosses the water and arrives. You sign up with a passkey, hold AUSD, and send it to anyone with an address or a pay link. It arrives in about a second. There's nothing to install from an app store and no seed phrase.
+Landfall is a mobile payments app on Monad. The name is the moment money crosses the water and arrives. You sign up with a passkey, hold AUSD, and send it to anyone with an address or a pay link. It arrives in a couple of seconds. There's nothing to install from an app store and no seed phrase.
 
 Built for Monad Metropolis, **Consumer Products & Payments** track, targeting the **Agora Cross-Border Payments** and **Best Mera-Powered UX** bounties.
 
@@ -10,7 +10,7 @@ Built for Monad Metropolis, **Consumer Products & Payments** track, targeting th
 
 - **Passkey onboarding with Mera.** "Create account" is one tap and one Face ID / fingerprint prompt. No form fields. Mera returns the passkey's PRF output, which we turn into a standard EVM account (BIP-39 → `m/44'/60'/0'/0/0`). No smart-account contract, no custody service, no key stored on any server. Signing in on another device with the same synced passkey restores the same account.
 - **AUSD balance.** The home screen shows the account's real AUSD balance on Monad testnet, read from Agora's token contract every two seconds.
-- **Send.** Paste an address or a Landfall pay link, enter an amount, tap Send. The app times the transfer from submit to receipt and shows it ("Settled in 0.84 s").
+- **Send.** Paste an address or a Landfall pay link, enter an amount, tap Send. The app times the transfer from submit to receipt and shows it ("Settled in 1.5 s" in our test).
 - **Instant Settlement.** You can also pay with another stablecoin (CTK on testnet). Agora's Instant Settlement pair swaps it and delivers AUSD straight to the recipient in the same transaction (`swapExactTokensForTokens` with `to = recipient`). The send screen shows Agora's live rate from `getAmountsOut`.
 - **Receive.** A QR code and a pay link (`?to=0x…&amount=25`) you can share on WhatsApp. Opening the link takes the payer straight to a filled-in Send screen, after signing in if needed.
 - **Received notification.** The receiver's screen shows "You received $25.00" as soon as the transfer lands, with no refresh.
@@ -114,7 +114,7 @@ This project deploys no contracts of its own. It uses Agora's published Monad te
 
 - Chain: Monad testnet (chain ID 10143, RPC `https://testnet-rpc.monad.xyz`, explorer `https://testnet.monadvision.com`).
 - Every send is a Monad transaction. The app measures submit-to-receipt time and shows it, and each receipt links to MonadVision.
-- Why Monad: sub-second finality is what makes "money lands before you put the phone down" true. Balance polling every 2 seconds also works because blocks are around 400 ms apart.
+- Why Monad: Monad's roughly 400 ms blocks are what make this feel instant. In our own test a $55 send settled in 1.5 s from tap to receipt, passkey signing and network round trip included. Balance polling every 2 seconds also works because blocks come that fast.
 - Contracts used: AUSD, AUSD faucet and Instant Settlement pair, all listed under "Agora contracts used".
 
 ## Tech stack

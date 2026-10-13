@@ -32,7 +32,7 @@ One video covers both bounties.
 
 **1:20 Stateless test.** On the sender: phone settings → clear this site's data, or open the link in a private tab. Tap "I already have an account", fingerprint. Same address, same balance. "Nothing stored on the phone or on a server. The passkey is the account."
 
-**1:40 Close.** "Landfall. Dollars across borders with a passkey, settled on Monad in under a second. Money, landed."
+**1:40 Close.** "Landfall. Dollars across borders with a passkey, settled on Monad in about a second and a half. Money, landed."
 
 ## If something breaks on camera
 

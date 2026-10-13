@@ -6,13 +6,13 @@ Landfall
 
 ## One-line description
 
-Send dollars across borders with a passkey: AUSD on Monad, settled in under a second.
+Send dollars across borders with a passkey: AUSD on Monad, settled in about a second and a half.
 
 ## Core features (Agora field: how the app lets a user send AUSD to another person or across borders)
 
 Landfall is a mobile payments app for sending dollars home. Sign-up is one fingerprint: Mera turns a passkey into an EVM account on Monad, so there's no seed phrase, no app store download and no custody service.
 
-Once in, you see your AUSD balance. To send, paste the recipient's address or a pay link they shared on WhatsApp, enter an amount and tap Send. The transfer settles on Monad and the app shows how long it took, usually under a second. The recipient's screen shows "You received $25.00" as soon as it lands.
+Once in, you see your AUSD balance. To send, paste the recipient's address or a pay link they shared on WhatsApp, enter an amount and tap Send. The transfer settles on Monad and the app shows how long it took, about 1.5 seconds in our tests. The recipient's screen shows "You received $25.00" as soon as it lands.
 
 Senders can also pay with a different stablecoin. Agora's Instant Settlement pair converts it, and the recipient receives AUSD in the same transaction, using swapExactTokensForTokens with the recipient as the `to` address. The send screen shows Agora's live rate before you confirm.
 
