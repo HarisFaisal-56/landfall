@@ -22,7 +22,7 @@ One video covers both bounties.
 
 **0:15 First transaction.** "Covered" appears next to network fees on its own. Tap Get test AUSD. The balance becomes $1,000.00 and the banner says "First transaction confirmed in X s after you opened Landfall." "Two taps from landing to a confirmed Monad transaction."
 
-**0:30 Send, no prompt.** Point at "No fingerprint needed for 15 min or $100 more." Tap Send, paste the pay link: address and amount fill in. "Confirm with: Nothing, you're inside your session." Tap Send.
+**0:30 Send, no prompt.** Point at "Fingerprint-free for 15 min or $100 more." Tap Send, paste the pay link: address and amount fill in. "Confirm with: Nothing, you're inside your session." Tap Send.
 
 **0:45 Settled.** "Settled in 0.x s." Tap the receipt for two seconds.
 

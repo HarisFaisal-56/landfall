@@ -59,6 +59,64 @@ function minutesLeft(auth) {
   return Math.max(0, Math.ceil((auth.startedAt + SESSION_MS - Date.now()) / 60000));
 }
 
+/* ---------------------------------------------------------------- icons */
+
+const Icon = ({ d, ...p }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
+    {d}
+  </svg>
+);
+const ArrowUpRight = () => <Icon d={<path d="M7 17 17 7M9 7h8v8" />} />;
+const ArrowDownLeft = () => <Icon d={<path d="M17 7 7 17M15 17H7V9" />} />;
+const Drop = () => <Icon d={<path d="M12 3.5s6 6.2 6 10.5a6 6 0 0 1-12 0c0-4.3 6-10.5 6-10.5Z" />} />;
+const ChevronLeft = () => <Icon d={<path d="m15 18-6-6 6-6" />} />;
+const Fingerprint = () => (
+  <Icon
+    d={
+      <path d="M12 11v3.5M8.5 8.6A5 5 0 0 1 17 12v1.5M7 12v1a5 5 0 0 0 .6 2.4M17 16.5a9 9 0 0 1-1 2.5M12 7a5 5 0 0 0-1.3.2M4.5 9.5A8 8 0 0 1 19.6 9M4 14a8 8 0 0 0 .5 2.5M10 14v.5a6 6 0 0 0 1.5 4" />
+    }
+  />
+);
+
+/** The logo: an arc landing on a horizon. */
+function Mark({ className = "mark" }) {
+  return (
+    <svg className={className} viewBox="0 0 512 512" aria-hidden="true">
+      <defs>
+        <linearGradient id="lf-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#efdcb6" />
+          <stop offset="1" stopColor="#b39461" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="128" fill="#161619" stroke="rgba(255,255,255,0.12)" strokeWidth="8" />
+      <path d="M128 304 C 176 168, 296 150, 364 304" fill="none" stroke="url(#lf-gold)" strokeWidth="30" strokeLinecap="round" />
+      <circle cx="364" cy="304" r="27" fill="url(#lf-gold)" />
+      <path d="M104 372 H408" stroke="#f2efe9" strokeWidth="26" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Wordmark() {
+  return (
+    <span className="wordmark">
+      <Mark />
+      {APP_NAME}
+    </span>
+  );
+}
+
+/** "$9,945.00" with the currency sign and cents set smaller, the way bank cards print them. */
+function Amount({ text }) {
+  const m = /^(\$)?(.*?)(\.\d+)?$/.exec(text) || [];
+  return (
+    <>
+      {m[1] && <span className="cur">{m[1]}</span>}
+      {m[2]}
+      {m[3] && <span className="dec">{m[3]}</span>}
+    </>
+  );
+}
+
 /* -------------------------------------------------------------- welcome */
 
 function Welcome({ pending, notice, onReady }) {
@@ -83,15 +141,49 @@ function Welcome({ pending, notice, onReady }) {
   return (
     <main className="shell welcome">
       <header className="bar">
-        <span className="wordmark">{APP_NAME}</span>
+        <Wordmark />
       </header>
 
       <section className="intro">
-        <h1>Send dollars home with your fingerprint.</h1>
+        <svg className="horizon" viewBox="0 0 300 96" aria-hidden="true">
+          <defs>
+            <linearGradient id="lf-arc" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#d6bc8e" stopOpacity="0" />
+              <stop offset="0.5" stopColor="#efdcb6" />
+              <stop offset="1" stopColor="#b39461" />
+            </linearGradient>
+          </defs>
+          <path className="arc" d="M14 78 C 70 2, 190 2, 238 78" fill="none" stroke="url(#lf-arc)" strokeWidth="2" strokeLinecap="round" />
+          <circle className="land" cx="238" cy="78" r="5" fill="#d6bc8e" />
+          <circle className="land" cx="238" cy="78" r="12" fill="none" stroke="#d6bc8e" strokeOpacity="0.3" />
+          <path d="M0 90 H300" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+        </svg>
+        <p className="eyebrow">Money, landed</p>
+        <h1>
+          Send dollars home with your <em>fingerprint.</em>
+        </h1>
         <p className="lede">
           Your account is a passkey on this phone. No app to install, no seed phrase to write down. Money arrives in
           a couple of seconds.
         </p>
+        <dl className="facts">
+          <div>
+            <dt>Passkey</dt>
+            <dd>No seed phrase</dd>
+          </div>
+          <div>
+            <dt>≈ 1.5 s</dt>
+            <dd>To settle on Monad</dd>
+          </div>
+          <div>
+            <dt>AUSD</dt>
+            <dd>Dollars by Agora</dd>
+          </div>
+          <div>
+            <dt>Gas covered</dt>
+            <dd>For your first sends</dd>
+          </div>
+        </dl>
         {notice && <p className="pending">{notice}</p>}
         {pending && (
           <p className="pending">
@@ -110,10 +202,12 @@ function Welcome({ pending, notice, onReady }) {
       <section className="entry">
         {hasSaved ? (
           <button className="primary" disabled={!!busy || !supported} onClick={() => go("signin")}>
+            <Fingerprint />
             {busy === "signin" ? "Waiting for your passkey…" : "Unlock with passkey"}
           </button>
         ) : (
           <button className="primary" disabled={!!busy || !supported} onClick={() => go("create")}>
+            <Fingerprint />
             {busy === "create" ? "Waiting for your passkey…" : "Create account"}
           </button>
         )}
@@ -145,7 +239,8 @@ function SessionChip({ auth, tokens, onLock }) {
   return (
     <p className="session">
       <span>
-        No fingerprint needed for {minutesLeft(auth)} min or ${money(left, d, 0)} more
+        <i className="pulse" aria-hidden="true" />
+        Fingerprint-free for {minutesLeft(auth)} min or ${money(left, d, 0)} more
       </span>
       <button className="link" onClick={onLock}>
         Lock now
@@ -161,8 +256,11 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
   return (
     <main className="shell">
       <header className="bar">
-        <span className="wordmark">{APP_NAME}</span>
-        <span className="chip">{shortAddr(me)}</span>
+        <Wordmark />
+        <span className="chip">
+          <i className="dot" aria-hidden="true" />
+          {shortAddr(me)}
+        </span>
       </header>
 
       <SessionChip auth={auth} tokens={tokens} onLock={onLock} />
@@ -174,21 +272,28 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
       )}
 
       <section className="hero">
-        <p className="label">Your balance</p>
-        {(() => {
-          const text = bal ? `$${money(bal.ausd, d)}` : "…";
-          return (
-            <p className="big" aria-live="polite" style={{ "--chars": text.length }}>
-              {text}
-            </p>
-          );
-        })()}
-        <p className="sub">{tokens?.ausdSymbol ?? "AUSD"}, a US dollar stablecoin by Agora, on Monad</p>
+        <div className="balance-card">
+          <div className="card-top">
+            <p className="label">Your balance</p>
+            <span className="network">Monad</span>
+          </div>
+          {(() => {
+            const text = bal ? `$${money(bal.ausd, d)}` : "…";
+            return (
+              <p className="big" aria-live="polite" style={{ "--chars": text.length }}>
+                <Amount text={text} />
+              </p>
+            );
+          })()}
+          <p className="sub">{tokens?.ausdSymbol ?? "AUSD"}, a US dollar stablecoin by Agora, on Monad</p>
+        </div>
         <div className="pair-actions">
           <button className="primary" onClick={onSend} disabled={!bal}>
+            <ArrowUpRight />
             Send
           </button>
           <button className="ghost" onClick={onReceive}>
+            <ArrowDownLeft />
             Receive
           </button>
         </div>
@@ -196,7 +301,9 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
 
       {(needsMon || needsAusd) && (
         <section className="setup">
-          <h2>Before your first send</h2>
+          <div className="section-head">
+            <h2 className="eyebrow">Before your first send</h2>
+          </div>
           <ol>
             <li className={needsMon ? "" : "done"}>
               <span>{gas === "topping" ? "Covering your first network fees…" : "Network fees (MON)"}</span>
@@ -228,13 +335,18 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
       )}
 
       <section className="activity">
-        <h2>Activity on this device</h2>
+        <div className="section-head">
+          <h2 className="eyebrow">Activity on this device</h2>
+        </div>
         {activity.length === 0 ? (
           <p className="empty">Nothing yet. Money you send or receive shows up here. Your balance always comes from the chain.</p>
         ) : (
           <ul>
             {activity.map((a) => (
               <li key={a.id}>
+                <span className={`a-icon ${a.type === "out" ? "" : "in"}`}>
+                  {a.type === "out" ? <ArrowUpRight /> : a.type === "faucet" ? <Drop /> : <ArrowDownLeft />}
+                </span>
                 <span className="a-main">
                   {a.type === "out" ? `Sent to ${shortAddr(a.to)}` : a.type === "faucet" ? "Test AUSD from faucet" : "Received"}
                   {a.ms != null && (
@@ -327,7 +439,8 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
     <main className="shell">
       <header className="bar">
         <button className="back" onClick={onBack} aria-label="Back to home">
-          ‹ Home
+          <ChevronLeft />
+          Home
         </button>
       </header>
 
@@ -410,7 +523,8 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
             {error}
           </p>
         )}
-        <button className="primary dark" disabled={!!busy}>
+        <button className="primary" disabled={!!busy}>
+          {busy === "confirm" ? <Fingerprint /> : <ArrowUpRight />}
           {busy === "confirm"
             ? "Confirm with your passkey…"
             : busy === "send"
@@ -430,9 +544,14 @@ function Sent({ result, tokens, onDone }) {
   return (
     <main className="shell sent">
       <section className="hero">
+        <span className="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m5 12.5 4.5 4.5L19 7.5" />
+          </svg>
+        </span>
         <p className="label">Sent to {shortAddr(result.to)}</p>
         <p className="big" style={{ "--chars": `$${money(result.received, tokens.ausdDecimals)}`.length }}>
-          ${money(result.received, tokens.ausdDecimals)}
+          <Amount text={`$${money(result.received, tokens.ausdDecimals)}`} />
         </p>
         <p className="settled">
           Settled in <strong>{seconds(result.ms)}</strong>
@@ -445,6 +564,7 @@ function Sent({ result, tokens, onDone }) {
         <p className="links">
           <a href={txUrl(result.hash)} target="_blank" rel="noreferrer">
             View the receipt on MonadVision
+            <ArrowUpRight />
           </a>
         </p>
         <button className="primary" onClick={onDone}>
@@ -464,7 +584,7 @@ function Receive({ me, onBack }) {
   const link = useMemo(() => payLink(me, parseAmount(amount, 6) ? amount.replace(/[$,\s]/g, "") : ""), [me, amount]);
 
   useEffect(() => {
-    QRCode.toDataURL(link, { margin: 1, width: 520, color: { dark: "#0E1330", light: "#F3F5FF" } })
+    QRCode.toDataURL(link, { margin: 0, width: 520, color: { dark: "#0C0C0E", light: "#FFFFFF" } })
       .then(setQr)
       .catch(() => setQr(""));
   }, [link]);
@@ -495,13 +615,18 @@ function Receive({ me, onBack }) {
     <main className="shell">
       <header className="bar">
         <button className="back" onClick={onBack} aria-label="Back to home">
-          ‹ Home
+          <ChevronLeft />
+          Home
         </button>
       </header>
       <section className="sheet receive">
         <h1>Get paid</h1>
         <p className="hint">Show this code, or send the link on WhatsApp. It opens Landfall with your details filled in.</p>
-        {qr && <img className="qr" src={qr} alt="QR code with your pay link" width="260" height="260" />}
+        {qr && (
+          <div className="qr-frame">
+            <img className="qr" src={qr} alt="QR code with your pay link" width="260" height="260" />
+          </div>
+        )}
         <label className="field">
           Ask for an amount (optional)
           <span className="money-input">
@@ -517,11 +642,12 @@ function Receive({ me, onBack }) {
         </label>
         <div className="row-actions">
           {typeof navigator !== "undefined" && navigator.share && (
-            <button className="primary dark" onClick={share}>
+            <button className="primary" onClick={share}>
+              <ArrowUpRight />
               Share pay link
             </button>
           )}
-          <button className="ghost on-light" onClick={() => copy(link, "link")}>
+          <button className="ghost" onClick={() => copy(link, "link")}>
             {copied === "link" ? "Link copied" : "Copy pay link"}
           </button>
         </div>
@@ -529,7 +655,7 @@ function Receive({ me, onBack }) {
           <a href={addressUrl(me)} target="_blank" rel="noreferrer">
             {me}
           </a>
-          <button className="link dark" onClick={() => copy(me, "addr")}>
+          <button className="link" onClick={() => copy(me, "addr")}>
             {copied === "addr" ? "Copied" : "Copy address"}
           </button>
         </p>
