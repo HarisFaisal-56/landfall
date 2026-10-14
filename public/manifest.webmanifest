@@ -4,7 +4,7 @@
   "description": "Send dollars across borders with a passkey.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#09090b",
-  "theme_color": "#09090b",
+  "background_color": "#f5f6f8",
+  "theme_color": "#f5f6f8",
   "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

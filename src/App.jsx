@@ -78,21 +78,52 @@ const Fingerprint = () => (
   />
 );
 
-/** The logo: an arc landing on a horizon. */
+const Lock = () => (
+  <Icon
+    d={
+      <>
+        <rect x="5" y="11" width="14" height="9" rx="2" />
+        <path d="M8 11V8a4 4 0 0 1 8 0" />
+      </>
+    }
+  />
+);
+const Clock = () => <Icon d={<path d="M12 9v4l2.5 2M9 2h6M20 13a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" />} />;
+const Check = () => <Icon d={<path d="m5 12.5 4.5 4.5L19 7.5" />} />;
+
+/** The logo: an arc landing on a horizon, on a graphite tile. */
 function Mark({ className = "mark" }) {
   return (
-    <svg className={className} viewBox="0 0 512 512" aria-hidden="true">
-      <defs>
-        <linearGradient id="lf-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#efdcb6" />
-          <stop offset="1" stopColor="#b39461" />
-        </linearGradient>
-      </defs>
-      <rect width="512" height="512" rx="128" fill="#161619" stroke="rgba(255,255,255,0.12)" strokeWidth="8" />
-      <path d="M128 304 C 176 168, 296 150, 364 304" fill="none" stroke="url(#lf-gold)" strokeWidth="30" strokeLinecap="round" />
-      <circle cx="364" cy="304" r="27" fill="url(#lf-gold)" />
-      <path d="M104 372 H408" stroke="#f2efe9" strokeWidth="26" strokeLinecap="round" />
-    </svg>
+    <span className={className} aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M12 40 C 20 18, 38 16, 46 40" stroke="#E6E8EC" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="46" cy="40" r="4" fill="#E6E8EC" />
+        <path d="M8 50 H56" stroke="#E6E8EC" strokeWidth="5" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
+/** Two stacked cards, graphite behind brushed titanium: the welcome screen's picture. */
+function Cards() {
+  return (
+    <div className="cards" aria-hidden="true">
+      <div className="card-back" />
+      <div className="card-front">
+        <div className="card-row">
+          <span>{APP_NAME}</span>
+          <Fingerprint />
+        </div>
+        <div>
+          <span className="card-kicker">Passkey account</span>
+          <span className="card-num">0x•••• •••• ••••</span>
+        </div>
+      </div>
+      <div className="float float-settled">
+        <Clock />
+        Settled in <strong>≈ 1.5 s</strong>
+      </div>
+    </div>
   );
 }
 
@@ -142,26 +173,18 @@ function Welcome({ pending, notice, onReady }) {
     <main className="shell welcome">
       <header className="bar">
         <Wordmark />
+        <span className="chip net">
+          <i className="dot" aria-hidden="true" />
+          Monad testnet
+        </span>
       </header>
 
+      <div className="welcome-grid">
+      <Cards />
+      <div className="welcome-copy">
       <section className="intro">
-        <svg className="horizon" viewBox="0 0 300 96" aria-hidden="true">
-          <defs>
-            <linearGradient id="lf-arc" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#d6bc8e" stopOpacity="0" />
-              <stop offset="0.5" stopColor="#efdcb6" />
-              <stop offset="1" stopColor="#b39461" />
-            </linearGradient>
-          </defs>
-          <path className="arc" d="M14 78 C 70 2, 190 2, 238 78" fill="none" stroke="url(#lf-arc)" strokeWidth="2" strokeLinecap="round" />
-          <circle className="land" cx="238" cy="78" r="5" fill="#d6bc8e" />
-          <circle className="land" cx="238" cy="78" r="12" fill="none" stroke="#d6bc8e" strokeOpacity="0.3" />
-          <path d="M0 90 H300" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-        </svg>
         <p className="eyebrow">Money, landed</p>
-        <h1>
-          Send dollars home with your <em>fingerprint.</em>
-        </h1>
+        <h1>Send dollars home with your fingerprint.</h1>
         <p className="lede">
           Your account is a passkey on this phone. No app to install, no seed phrase to write down. Money arrives in
           a couple of seconds.
@@ -225,6 +248,8 @@ function Welcome({ pending, notice, onReady }) {
         )}
         <p className="fine">Runs on Monad testnet with test dollars. Nothing here is real money.</p>
       </section>
+      </div>
+      </div>
     </main>
   );
 }
@@ -239,10 +264,10 @@ function SessionChip({ auth, tokens, onLock }) {
   return (
     <p className="session">
       <span>
-        <i className="pulse" aria-hidden="true" />
+        <Lock />
         Fingerprint-free for {minutesLeft(auth)} min or ${money(left, d, 0)} more
       </span>
-      <button className="link" onClick={onLock}>
+      <button className="pill-sm" onClick={onLock}>
         Lock now
       </button>
     </p>
@@ -254,15 +279,14 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
   const needsMon = bal && bal.mon === 0n;
   const needsAusd = bal && bal.ausd === 0n;
   return (
-    <main className="shell">
+    <main className="shell home">
       <header className="bar">
         <Wordmark />
-        <span className="chip">
-          <i className="dot" aria-hidden="true" />
-          {shortAddr(me)}
-        </span>
+        <span className="chip">{shortAddr(me)}</span>
       </header>
 
+      <div className="home-grid">
+      <div className="home-main">
       <SessionChip auth={auth} tokens={tokens} onLock={onLock} />
 
       {toast && (
@@ -285,7 +309,7 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
               </p>
             );
           })()}
-          <p className="sub">{tokens?.ausdSymbol ?? "AUSD"}, a US dollar stablecoin by Agora, on Monad</p>
+          <p className="sub">{tokens?.ausdSymbol ?? "AUSD"} · US dollar stablecoin by Agora</p>
         </div>
         <div className="pair-actions">
           <button className="primary" onClick={onSend} disabled={!bal}>
@@ -298,7 +322,9 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
           </button>
         </div>
       </section>
+      </div>
 
+      <div className="home-side">
       {(needsMon || needsAusd) && (
         <section className="setup">
           <div className="section-head">
@@ -323,7 +349,7 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
             <li className={needsAusd ? "" : "done"}>
               <span>Get test AUSD from Agora's faucet.</span>
               {needsAusd ? (
-                <button className="ghost small" onClick={onFaucet} disabled={!!busy || needsMon}>
+                <button className="primary small" onClick={onFaucet} disabled={!!busy || needsMon}>
                   {busy === "faucet" ? "Requesting…" : "Get test AUSD"}
                 </button>
               ) : (
@@ -369,6 +395,8 @@ function Home({ auth, me, tokens, bal, gas, activity, toast, onSend, onReceive, 
           </ul>
         )}
       </section>
+      </div>
+      </div>
     </main>
   );
 }
@@ -436,7 +464,7 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
   }
 
   return (
-    <main className="shell">
+    <main className="shell send">
       <header className="bar">
         <button className="back" onClick={onBack} aria-label="Back to home">
           <ChevronLeft />
@@ -444,8 +472,9 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
         </button>
       </header>
 
-      <form className="sheet" onSubmit={submit} noValidate>
+      <form className="sheet send-form" onSubmit={submit} noValidate>
         <h1>Send dollars</h1>
+        <div className="send-fields">
         <label className="field">
           To
           <input
@@ -498,7 +527,9 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
             </label>
           )}
         </fieldset>
+        </div>
 
+        <div className="send-side">
         <div className="summary">
           <p>
             <span>They receive</span>
@@ -533,6 +564,7 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
                 ? `Send $${amount.replace(/^\$/, "")}`
                 : "Send"}
         </button>
+        </div>
       </form>
     </main>
   );
@@ -545,15 +577,18 @@ function Sent({ result, tokens, onDone }) {
     <main className="shell sent">
       <section className="hero">
         <span className="badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m5 12.5 4.5 4.5L19 7.5" />
-          </svg>
+          <span className="badge-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m5 12.5 4.5 4.5L19 7.5" />
+            </svg>
+          </span>
         </span>
         <p className="label">Sent to {shortAddr(result.to)}</p>
         <p className="big" style={{ "--chars": `$${money(result.received, tokens.ausdDecimals)}`.length }}>
           <Amount text={`$${money(result.received, tokens.ausdDecimals)}`} />
         </p>
         <p className="settled">
+          <Clock />
           Settled in <strong>{seconds(result.ms)}</strong>
         </p>
         <p className="sub">
@@ -584,7 +619,7 @@ function Receive({ me, onBack }) {
   const link = useMemo(() => payLink(me, parseAmount(amount, 6) ? amount.replace(/[$,\s]/g, "") : ""), [me, amount]);
 
   useEffect(() => {
-    QRCode.toDataURL(link, { margin: 0, width: 520, color: { dark: "#0C0C0E", light: "#FFFFFF" } })
+    QRCode.toDataURL(link, { margin: 0, width: 520, color: { dark: "#15171A", light: "#FFFFFF" } })
       .then(setQr)
       .catch(() => setQr(""));
   }, [link]);
@@ -612,7 +647,7 @@ function Receive({ me, onBack }) {
   }
 
   return (
-    <main className="shell">
+    <main className="shell receive-page">
       <header className="bar">
         <button className="back" onClick={onBack} aria-label="Back to home">
           <ChevronLeft />
@@ -620,13 +655,16 @@ function Receive({ me, onBack }) {
         </button>
       </header>
       <section className="sheet receive">
+        <div className="receive-qr">
+          {qr && (
+            <div className="qr-frame">
+              <img className="qr" src={qr} alt="QR code with your pay link" width="260" height="260" />
+            </div>
+          )}
+        </div>
+        <div className="receive-controls">
         <h1>Get paid</h1>
         <p className="hint">Show this code, or send the link on WhatsApp. It opens Landfall with your details filled in.</p>
-        {qr && (
-          <div className="qr-frame">
-            <img className="qr" src={qr} alt="QR code with your pay link" width="260" height="260" />
-          </div>
-        )}
         <label className="field">
           Ask for an amount (optional)
           <span className="money-input">
@@ -659,6 +697,7 @@ function Receive({ me, onBack }) {
             {copied === "addr" ? "Copied" : "Copy address"}
           </button>
         </p>
+        </div>
       </section>
     </main>
   );
