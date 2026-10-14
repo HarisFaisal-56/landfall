@@ -38,5 +38,5 @@ Composability: Mera accounts drive gas sponsorship, Agora's AUSD and Agora's Ins
 
 ## Notes for judges
 
-- Instant Settlement swaps need Agora's APPROVED_SWAPPER role. [Edit this line: either "Our demo account is approved and the video shows a live swap", or "We requested approval; until it's granted the app shows the live Agora rate and sends AUSD directly."]
+- Instant Settlement swaps need Agora's APPROVED_SWAPPER role, which we've requested but not yet received. The swap path is fully built and passes our end-to-end tests against a local copy of the pair. Until approval lands, the live app reads the pair, shows "waiting for Agora approval", and sends AUSD directly.
 - Passkeys need https; the hosted version works on iOS 18+ and Android with Google Password Manager.
