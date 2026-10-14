@@ -5,9 +5,12 @@
       <stop offset="1" stop-color="#15171a"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#g)"/>
-  <!-- an arc arriving onto a horizon line: money making landfall -->
-  <path d="M128 304 C 176 168, 296 150, 364 304" fill="none" stroke="#e6e8ec" stroke-width="30" stroke-linecap="round"/>
-  <circle cx="364" cy="304" r="28" fill="#e6e8ec"/>
-  <path d="M104 372 H408" stroke="#e6e8ec" stroke-width="30" stroke-linecap="round"/>
+  <rect width="512" height="512" rx="114" fill="url(#g)"/>
+  <!-- Landfall mark: land rising over the horizon, the water below fading out. -->
+  <g transform="translate(80 25) scale(5.5)" fill="none" stroke="#eceef1" stroke-linecap="round" stroke-width="5">
+    <path d="M16 40 A 16 16 0 0 1 48 40 Z" fill="#eceef1" stroke="none"/>
+    <path d="M8 40 H56"/>
+    <path d="M16 49 H48" opacity="0.55"/>
+    <path d="M24 57.5 H40" opacity="0.3"/>
+  </g>
 </svg>

@@ -91,15 +91,27 @@ const Lock = () => (
 const Clock = () => <Icon d={<path d="M12 9v4l2.5 2M9 2h6M20 13a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" />} />;
 const Check = () => <Icon d={<path d="m5 12.5 4.5 4.5L19 7.5" />} />;
 
-/** The logo: an arc landing on a horizon, on a graphite tile. */
+/**
+ * The Landfall mark: land rising over the horizon, with the water below fading out.
+ * Drawn in currentColor so the same glyph works on the graphite tile and engraved on metal.
+ * Same geometry as public/icon.svg. The viewBox starts at y=10 so the mark sits optically centred.
+ */
+function LandfallMark({ weight = 5.5 }) {
+  return (
+    <svg className="lmark" viewBox="0 10 64 64" fill="none" aria-hidden="true">
+      <path d="M16 40 A 16 16 0 0 1 48 40 Z" fill="currentColor" />
+      <path d="M8 40 H56" stroke="currentColor" strokeWidth={weight} strokeLinecap="round" />
+      <path d="M16 49 H48" stroke="currentColor" strokeWidth={weight} strokeLinecap="round" opacity="0.55" />
+      <path d="M24 57.5 H40" stroke="currentColor" strokeWidth={weight} strokeLinecap="round" opacity="0.3" />
+    </svg>
+  );
+}
+
+/** The logo on its graphite tile. */
 function Mark({ className = "mark" }) {
   return (
     <span className={className} aria-hidden="true">
-      <svg viewBox="0 0 64 64" fill="none">
-        <path d="M12 40 C 20 18, 38 16, 46 40" stroke="#E6E8EC" strokeWidth="5" strokeLinecap="round" />
-        <circle cx="46" cy="40" r="4" fill="#E6E8EC" />
-        <path d="M8 50 H56" stroke="#E6E8EC" strokeWidth="5" strokeLinecap="round" />
-      </svg>
+      <LandfallMark />
     </span>
   );
 }
@@ -112,7 +124,7 @@ function Cards() {
       <div className="card-front">
         <div className="card-row">
           <span>{APP_NAME}</span>
-          <Fingerprint />
+          <LandfallMark weight={3.6} />
         </div>
         <div>
           <span className="card-kicker">Passkey account</span>
@@ -470,6 +482,7 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
           <ChevronLeft />
           Home
         </button>
+        <Wordmark />
       </header>
 
       <form className="sheet send-form" onSubmit={submit} noValidate>
@@ -575,6 +588,9 @@ function Send({ auth, tokens, bal, prefill, onBack, onSubmit, busy }) {
 function Sent({ result, tokens, onDone }) {
   return (
     <main className="shell sent">
+      <header className="bar">
+        <Wordmark />
+      </header>
       <section className="hero">
         <span className="badge" aria-hidden="true">
           <span className="badge-core">
@@ -653,6 +669,7 @@ function Receive({ me, onBack }) {
           <ChevronLeft />
           Home
         </button>
+        <Wordmark />
       </header>
       <section className="sheet receive">
         <div className="receive-qr">

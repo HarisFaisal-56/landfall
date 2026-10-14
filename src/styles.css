@@ -110,9 +110,13 @@ h2 {
     0 4px 10px -4px rgba(21, 23, 26, 0.5);
 }
 
+.mark {
+  color: #eceef1;
+}
+
 .mark svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
 }
 
 .chip {
@@ -297,10 +301,9 @@ h2 {
 }
 
 .card-row svg {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   color: #5c626b;
-  stroke-width: 1.5;
 }
 
 .card-kicker {
@@ -1098,7 +1101,7 @@ button:disabled {
 
 /* ---- sent ------------------------------------------------------- */
 .sent .hero {
-  padding-top: 11vh;
+  padding-top: 6vh;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1344,8 +1347,8 @@ button:disabled {
   }
 
   .mark svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .chip {
@@ -1393,8 +1396,8 @@ button:disabled {
   }
 
   .card-row svg {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
   }
 
   .card-kicker {
@@ -1672,7 +1675,7 @@ button:disabled {
   .sent .hero {
     max-width: 560px;
     margin: 0 auto;
-    padding-top: 90px;
+    padding-top: 40px;
   }
 
   .badge {
